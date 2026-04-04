@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VMax Motor Tester</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="./js/simple-web-serial.min.js" ></script>
+
+</head>
+<body>
+    <div>
+        <div class="headertitle">
+            <div id="heading">VMax Motor tester</div>
+            <div id="chartButtons">
+                <span class="hiddenFileInput load"><input id="saveChart" type="button" title="Save chart to file"></span>
+                <span class="hiddenFileInput save"><input type="file" title="Load chart from file" name="theFile" onchange="readFile(this)"/></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="noserial">
+        Web Serial is not supported on your browser. Make sure you're running an up to date Chromium based browser.
+    </div>
+
+    <div class="maindiv">
+        <div class="settingsColumn">
+            <div class="settings">
+                <div class="label"><div>Throttle(%)</div><div  id="throttle" class="measurement">0</div></div>
+            </div>
+
+            <table class="settingsVar">
+                <tr><td>Throttle min:</td><td><input id="th_from" value="5" /></td></tr>
+                <tr><td>Throttle max:</td><td><input id="th_to" value="100" /></td></tr>
+                <tr><td>Throttle step:</td><td><input id="step" value="5" /></td></tr>
+                <tr><td></td><td><button id="start" value="Set">Start</button></td></tr>
+            </table>
+
+            <div class="settings">
+                <div class="label"><div>Thrust(g)</div><div id="thrust" class="measurement">1280</div></div><br/>
+            </div>
+            <table class="settingsVar">
+                <tr><td>Set zero:</td><td></td></td><td><button id="tare" value="Tare">Tare</button></td></tr>
+                <tr><td>Calibrate:</td><td><input id="weight" value="1000"/></td><td><button id="setWeight" value="Set">Set</button></td></td></tr>
+            </table>
+
+
+            <div class="settings">
+                <div class="label"><div>RPM</div><div id="rpm" class="measurement">1208000</div></div>
+            </div>
+            <table class="settingsVar">
+                <tr><td>Magnets count:</td><td><input id="num_magnets" value="14" /></td></tr>
+            </table>
+            <div class="settings">
+                <div class="label"><div>Voltage(V)</div><div id="voltage" class="measurement">1280</div></div>
+            </div>
+            <div class="settings">
+                <div class="label"><div>Current(A)</div><div id="current" class="measurement">1280</div></div>
+            </div>
+            <table class="settingsVar">
+                <tr><td>Current limit:</td><td><input id="max_amps" value="40" /></td></tr>
+            </table>
+            <div class="settings">
+                <div class="label"><div>Temperature(C)</div><div id="temp" class="measurement">0</div></div>
+            </div>
+            <div class="settings">
+                <div class="label"><div>Consumed(mAh)</div><div id="consumed" class="measurement">0</div></div>
+            </div>
+        </div>
+
+        <div class="resultdiv">
+            <canvas id="line-chart" width="800" height="450"></canvas>
+
+        </div>
+
+    </div>
+    <div id="term"></div>
+
+</body>
+<script src="js/chart_config.js"></script>
+<script src="js/connector.js"></script>
+<script>
+
+
+    function getAsInt(id) {
+        return  Number.parseInt(document.getElementById(id).value);
+    }
+    function getAsFloat(id) {
+        return  Number.parseFloat(document.getElementById(id).value);
+    }
+
+    var abortController = new AbortController();
+
+    function setThrottleAndWait( throttle, millis ) {
+        let abortSignal = abortController.signal;
+        const error = 'Aborted by the user';
+        return new Promise( ( resolve, reject ) => {
+            if ( abortSignal.aborted ) { // 2
+                return reject( error );
+            }
+            setThrottle(throttle);
+            const timeout = setTimeout(
+                    ()=> { resolve();},
+                    millis
+            );
+            abortSignal.addEventListener( 'abort', () => { // 6
+                clearTimeout( timeout ); // 7
+                reject( error ); // 8
+            },  { once: true }  );
+        });
+    }
+
+
+    var measuring = false;
+    async function checkDirection() {
+            var throttle = 5.0;
+            connection.send("cmd", {spin: 1});
+            var thrust;
+            console.log("Check direction")
+            while (measuring) {
+                await setThrottleAndWait(throttle, 200);
+                thrust = lastMeasure['thrust'];
+                if (Number.isNaN(thrust)) {
+                    throw "Trust is NaN"
+                }
+                if (Math.abs(thrust) >= 10) {
+                    break;
+                }
+                throttle += 0.5;
+            }
+
+            if (measuring) {
+                await setThrottleAndWait(0.0, 1000);
+                if (thrust < 0) {
+                    connection.send("cmd", {spin: -1});
+                }
+            }
+            if (!measuring) {
+                throw "check direction aborted"
+            }
+
+    }
+
+    async function sweepThrottle() {
+        var throttle = getAsInt("th_from")
+        var max = getAsInt("th_to");
+        var max_amps = getAsFloat("max_amps");
+        var step=getAsFloat("step");
+        console.log("Sweep from "+throttle+" to "+max);
+        while(measuring) {
+            if(lastMeasure['current'] > max_amps) {
+                console.log("Current limit reached");
+                break;
+            }
+            await setThrottleAndWait(throttle,1000);
+            updateChart(throttle,lastMeasure);
+            throttle+=step;
+            if(throttle > max) {
+                break;
+            }
+        }
+
+    }
+
+
+
+
+    async function measure() {
+
+        try {
+            clearCharts();
+            await checkDirection();
+            await sweepThrottle();
+        }
+        catch (error) {
+            console.error(error);
+        }
+        setThrottle(0);
+        abortController = null;
+        startButton.innerText = "Start";
+        measuring = false;
+    }
+
+
+    document.getElementById('throttle').innerHTML = 0.0;
+
+
+    document.getElementById('tare').addEventListener("click", () => {tare();});
+    document.getElementById('setWeight').addEventListener("click",() => {
+        var val =  getAsInt('weight');
+        connection.send("cmd", {thrust: val} );
+    });
+
+    var startButton = document.getElementById('start');
+
+    startButton.addEventListener("click",(event) => {
+        measuring = !measuring;
+        event.stopPropagation();
+        if(measuring) {
+            abortController = new AbortController();
+            startButton.innerText = "Stop";
+            measure();
+        }
+        else {
+            abortController.abort('STOPPED');
+            abortController = null;
+            startButton.innerText = "Start";
+        }
+    });
+
+    async function saveCSVWithDialog(csvString) {
+        try {
+            // 1. Open the "Save As" dialog
+            const handle = await window.showSaveFilePicker({
+                suggestedName: 'data.csv',
+                types: [{
+                    description: 'CSV Files',
+                    accept: { 'text/csv': ['.csv'] },
+                }],
+            });
+
+            // 2. Create a writable stream and write the content
+            const writable = await handle.createWritable();
+            await writable.write(csvString);
+            await writable.close();
+
+            console.log('File saved successfully!');
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Error saving file:', err);
+            }
+        }
+    }
+
+    document.getElementById('saveChart').addEventListener("click",(event) => {
+        saveCSVWithDialog(getCsv());
+    });
+
+    function readFile(input) {
+        let file = input.files[0];
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = function() {
+            loadChartData(reader.result);
+        };
+        reader.onerror = function() {
+            console.log(reader.error);
+        };
+    }
+
+
+    window.addEventListener("unload", function() {setThrottle(0.0)});
+
+
+</script>
+
+</html>
