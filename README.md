@@ -10,6 +10,9 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 - HTML page application (Chromium based browser required)
 - STL files for 3d printing stand parts
 
+## Requirements
+- Before wiring connect ESC to AM32 configurator to enable 30ms telemetry on ESC telemetry output
+- Chromium based browser required to run HTML application.
 
 ## Wiring
 ![scheme](/img/connections.png)
