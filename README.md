@@ -8,3 +8,6 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 - HTML page application (Chromium based browser required)
 - STL files for 3d printing stand parts
 
+
+## Wiring
+![scheme](/img/connections.png)
