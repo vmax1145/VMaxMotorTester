@@ -7,7 +7,7 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 ![img1](/img/assembly.png) ![img2](/img/assembled.png) ![img3](/img/opened.png) 
 
 ## Project include
-- Arduino sketch for ESP32S3 supermini board
+- [Arduino sketch for ESP32S3 supermini board](arduino/README.md)
 - HTML page application (Chromium based browser required)
 - STL files for 3d printing stand parts
 
