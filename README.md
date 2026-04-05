@@ -20,6 +20,14 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 
 ## Bill of materials
 - [ESP32S3 supermini board](/img/esp32s3supermini.png)
-- [HX711 amplifier and Load cell](/img/load_cell_HX711.png)
-- [Tekko32 F4 AM32 ESC](/img/tekko32_bom.png)
-- [Amas male XT60 connector](/img/xt60.jpg) 
+- [HX711 amplifier and Load cell](/img/load_cell_HX711.png) Choose 1/2/5/10 KG load cell depending on your requirements. 
+- [Tekko32 F4 AM32 ESC](/img/tekko32_bom.png) Or other ESC supporting full extended telemetry (erpm/temperature/current/voltage/consumption) on separate wire with KISS protocol.
+- [Amass male XT60 connector](/img/xt60.jpg)
+- [GT2 idler pulley 20T smooth, bore 3mm](/img/pulley.png) 
+- [WP3-19 spring load connector](/img/WP3-19.png) Optional, but recommended.
+- [2020 alluminium profile](/img/2020.png) 250-330mm length sutable for most cases up to 8-10 inch propellers. But for large propellers you may need more.
+- [Clamp alluminium](/img/clamp.png) Printed parts are designed to match this specific clamp sizes
+- [M3 inserts ⌀4mm l=5mm](/img/m3_inserts.png) (10 pcs)
+- [M3 profile nuts for 2020 profile](/img/M3_2020_nuts.png) (6pcs)
+- AWG16 and AWG28 silicone wires
+- M3 bolts and nuts 
