@@ -48,10 +48,11 @@ uint16_t avgMeasure(volatile uint16_t *measureData) {
 }
 
 
-
+float prevThrust = 0;
 JSONVar getSensorReadings(){
-    
-    readings["thrust"]  =  thrustSensor.measure();
+    float thrust = thrustSensor.measure();
+    readings["thrust"]  =  (prevThrust+thrust)/2.0;
+    prevThrust = thrust;
     readings["voltage"] = avgMeasure(voltage);
     readings["current"] = avgMeasure(current);
     readings["erpm"] = avgMeasure(erpm);
@@ -95,7 +96,7 @@ void parseCommand(JSONVar myObject) {
             
             motor01.sendCustomCommand(DSHOT_CMD_MOTOR_STOP, 10, 1000);            
             motor01.sendCustomCommand(v ? DSHOT_CMD_SPIN_DIRECTION_NORMAL : DSHOT_CMD_SPIN_DIRECTION_REVERSED, 10, 1000);            
-
+            motor01.sendCustomCommand(DSHOT_CMD_SAVE_SETTINGS, 10, 1000);            
             sprintf(termbuff, "Spin dir %s", v ? "forward":"reversed");
             WebSerial.send("term",termbuff);
         }

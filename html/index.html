@@ -135,21 +135,21 @@
 
     var measuring = false;
     async function checkDirection() {
-            var throttle = 5.0;
+            var throttle = 20.0;
             connection.send("cmd", {spin: 1});
             var thrust;
             console.log("Check direction")
             while (measuring) {
-                await setThrottleAndWait(throttle, 200);
+                await setThrottleAndWait(throttle, 1000);
                 thrust = lastMeasure['thrust'];
                 if (Number.isNaN(thrust)) {
                     throw "Trust is NaN"
                 }
-                if (Math.abs(thrust) >= 10) {
+                if (Math.abs(thrust) >= 20) {
                     break;
                 }
-                throttle += 0.5;
-                if(throttle > 40) {
+                throttle += 1;
+                if(throttle > 50) {
                     toTerm("No thrust detected!!!");
                     measuring = false;
                     break;
@@ -181,11 +181,8 @@
                 break;
             }
             await setThrottleAndWait(throttle,1000);
-            toTerm(JSON.stringify(lastMeasure));
             updateChart(throttle,lastMeasure);
-            if(measuring) {
-                await justWait(throttle, 500);
-            }
+            toTerm(JSON.stringify(lastMeasure));
             throttle+=step;
             if(throttle > max) {
                 break;
