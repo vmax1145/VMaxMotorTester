@@ -20,5 +20,17 @@ For ESP32S3 supermini open Select Board and Port dialog and search for
 Just for info screenshot with settings in tools menu 
 ![img1](/arduino/img/tools.png)
  
+### Sketch tuning 
+One can change defaults in [MTWebSerial.ino](MTWebSerial/MTWebSerial.ino) 
+including pin assignments and default scale calibration coefficient
+```c++
+#define HX711_DATA_PIN 1
+#define HX711_CLK_PIN 2
+#define THRUST_SCALE_DEFAULT  1931.0
+#define TELEMETRY_RX_PIN GPIO_NUM_6
+#define TELEMETRY_TX_PIN GPIO_NUM_7 //dummy any free pin
+```
+NOTE: Changes of scale calibration coefficient requires reflashing with full flash erasing   
+otherwise value stored in preferences will be used instead
 
 
