@@ -1,5 +1,12 @@
 var connection;
 var lastMeasure = new Object();
+
+function toTerm(val) {
+    var ta = document.getElementById('term');
+    ta.innerText = ta.innerText+"\n"+val;
+    ta.scrollTop = ta.scrollHeight;
+}
+
 if(!("serial" in navigator)) {
     document.getElementById("noserial").style.display = "block";
 }
@@ -30,9 +37,7 @@ else {
     });
     connection.on("term", value => {
         var log = JSON.stringify(value);
-        var ta = document.getElementById('term');
-        ta.innerText = ta.innerText+"\n"+log;
-        ta.scrollTop = ta.scrollHeight;
+        toTerm(log);
     });
 }
 

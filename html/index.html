@@ -129,6 +129,11 @@
                     break;
                 }
                 throttle += 0.5;
+                if(throttle > 40) {
+                    toTerm("No thrust detected!!!");
+                    measuring = false;
+                    break;
+                }
             }
 
             if (measuring) {
