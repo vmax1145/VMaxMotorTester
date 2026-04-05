@@ -4,6 +4,7 @@ and read extended KISS telemetry data as well as data from HX711 connected to lo
 Collected data transmitted via USB serial to HTML page for visualization and control.
 ![screenshot_tester](/img/Screenshot_tester.png)
 
+![img1](/img/assembly.png) ![img2](/img/assembled.png) ![img3](/img/opened.png) 
 
 ## Project include
 - Arduino sketch for ESP32S3 supermini board
