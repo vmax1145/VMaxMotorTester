@@ -1,4 +1,8 @@
 # VMaxMotorTester DIY brushless motors thrust stand
+
+## CAUTION !!! Be carefull when working with thrust stand. Rotating propeller is extreemly dangerous !!!  
+
+
 Thrust stand is implemented with ESP32S3 supermini board to control Tekko32 F4 AM32 ESC 
 and read extended KISS telemetry data as well as data from HX711 connected to load cell.
 Collected data transmitted via USB serial to HTML page for visualization and control.
@@ -8,8 +12,9 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 
 ## Project include
 - [Arduino sketch for ESP32S3 supermini board](arduino/README.md)
-- HTML page application (Chromium based browser required)
-- STL files for 3d printing stand parts
+- [HTML application](html/README.md) (Chromium based browser required)
+- STL files for 3d printed stand parts
+- Autodesk Fusion360 3d model source file 
 
 ## Requirements
 - Before wiring connect ESC to AM32 configurator to enable 30ms telemetry on ESC telemetry output
