@@ -17,3 +17,9 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 
 ## Wiring
 ![scheme](/img/connections.png)
+
+## Bill of materials
+- [ESP32S3 supermini board](/img/esp32s3supermini.png)
+- [HX711 amplifier and Load cell](/img/load_cell_HX711.png)
+- [Tekko32 F4 AM32 ESC](/img/tekko32_bom.png)
+- [Amas male XT60 connector](/img/xt60.jpg) 
