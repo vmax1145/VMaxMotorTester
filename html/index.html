@@ -93,6 +93,26 @@
 
     var abortController = new AbortController();
 
+
+    function justWait( throttle, millis ) {
+        let abortSignal = abortController.signal;
+        const error = 'Aborted by the user';
+        return new Promise( ( resolve, reject ) => {
+            if ( abortSignal.aborted ) { // 2
+                return reject( error );
+            }
+            const timeout = setTimeout(
+                ()=> { resolve();},
+                millis
+            );
+            abortSignal.addEventListener( 'abort', () => { // 6
+                clearTimeout( timeout ); // 7
+                reject( error ); // 8
+            },  { once: true }  );
+        });
+    }
+
+
     function setThrottleAndWait( throttle, millis ) {
         let abortSignal = abortController.signal;
         const error = 'Aborted by the user';
@@ -134,6 +154,7 @@
                     measuring = false;
                     break;
                 }
+
             }
 
             if (measuring) {
@@ -160,7 +181,11 @@
                 break;
             }
             await setThrottleAndWait(throttle,1000);
+            toTerm(JSON.stringify(lastMeasure));
             updateChart(throttle,lastMeasure);
+            if(measuring) {
+                await justWait(throttle, 500);
+            }
             throttle+=step;
             if(throttle > max) {
                 break;
