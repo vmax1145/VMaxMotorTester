@@ -32,10 +32,11 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 - [WP3-19 spring load connector](/img/WP3-19.png) Optional, but recommended.
 - [2020 alluminium profile](/img/2020.png) 250-330mm length sutable for most cases up to 8-10 inch propellers. But for large propellers you may need more.
 - [Clamp alluminium](/img/clamp.png) Printed parts are designed to match this specific clamp sizes
-- [M3 inserts ⌀4mm l=5mm](/img/m3_inserts.png) (10 pcs)
+- [M2.5 inserts ⌀4mm l=5mm](/img/m3_inserts.png) (8 pcs)
+- [M3 inserts ⌀4mm l=5mm](/img/m3_inserts.png) (2 pcs)
 - [M3 profile nuts for 2020 profile](/img/M3_2020_nuts.png) (6pcs)
 - AWG16 and AWG28 silicone wires
-- M3 bolts and nuts 
+- M3, M2.5 bolts and nuts 
 
 ## Known issues
 - Due to poor design of current sensor in Tekko32 F4 AM32 
