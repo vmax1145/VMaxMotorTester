@@ -48,6 +48,7 @@ var chart = new Chart(document.getElementById("line-chart"), {
                 borderColor: '#b0a000',
                 data: []
             }
+
         ]
     },
 
@@ -58,7 +59,8 @@ var chart = new Chart(document.getElementById("line-chart"), {
             yRpm: {type: 'linear', min: 0, position: 'right',ticks: {source: 'labels', color:'#0000a0'}, title: {display: true, color:'#0000a0'}}, //text: 'RPM',
             yCur: {type: 'linear', min: 0, ticks: {color:'#b00000'}, title: {display: true, color:'#b00000'}}, //text:'Current (A)',
             yVolt: {type: 'linear', min: 0, ticks: {color:'#606060'}, title: {display: true, color:'#606060'}}, //,text: 'Voltage (V)'
-            yPow: {type: 'linear', min: 0, ticks: {color:'#b0a000'}, title: {display: true, color:'#b0a000'}} //text: 'Power (W)',
+            yPow: {type: 'linear', min: 0, ticks: {color:'#b0a000'}, title: {display: true, color:'#b0a000'}}, //text: 'Power (W)',
+            ymT: {type: 'linear',position: 'right', min: 0, max: 100, ticks: {color:'#b000ff'}, title: {display: true, color:'#b000ff'}, display:false} //text: 'Motor T',
         },
         parsing: false,
         animation: false,
@@ -105,25 +107,54 @@ function toggleChart(inx) {
     chart.setDatasetVisibility(inx,datasetsVisible[inx]);
 }
 
+function addMotTempDataset() {
+    if(chart.data.datasets[5] == null) {
+        chart.data.datasets.push(
+            {
+                label:"Motor T(C)",
+                cubicInterpolationMode: 'monotone',
+                showLine: true,
+                yAxisID: 'ymT',
+                borderColor: '#b000ff',
+                data: []
+            }
+        );
+        chart.options.scales['ymT'].display = true;
+        chart.update();
+    }
+}
+
 function updateChart(throttle, lastMeasure) {
     chart.data.datasets[0].data.push({x:throttle,y:lastMeasure["thrust"]});
     chart.data.datasets[1].data.push({x:throttle,y:lastMeasure["rpm"]});
     chart.data.datasets[2].data.push({x:throttle,y:lastMeasure["current"]});
     chart.data.datasets[3].data.push({x:throttle,y:lastMeasure["voltage"]});
     chart.data.datasets[4].data.push({x:throttle,y:(lastMeasure["voltage"]*lastMeasure["current"])});
+    if(lastMeasure["mT"]!=null) {
+        addMotTempDataset()
+        chart.data.datasets[5].data.push({x:throttle,y:lastMeasure["mT"]});
+    }
     chart.update();
 }
 
-function getCsv() {
 
-    var ret = 'throttle, thrust, rpm, current, voltage\n'
+
+function getCsv() {
+    var withMotTemp = chart.data.datasets[5]!=null;
+    var ret = 'throttle, thrust, rpm, current, voltage'
+    if(withMotTemp) {
+        ret+=", motTemp";
+    }
+    ret+='\n';
     chart.data.datasets[0].data.forEach( (r,inx)=> {
         ret += r.x+','+r.y +','
             + chart.data.datasets[1].data[inx].y +','
             + chart.data.datasets[2].data[inx].y +','
-            + chart.data.datasets[3].data[inx].y
-            +'\n'
-        ;
+            + chart.data.datasets[3].data[inx].y;
+        if(withMotTemp) {
+            ret+= ','+chart.data.datasets[5].data[inx].y
+        }
+        ret+='\n';
     });
     return ret;
 }
@@ -141,13 +172,17 @@ function loadChartData(value) {
 
          if(inx>0) {
              var fields = r.split(',');
-             if(fields.length === 5) {
+             if(fields.length >= 5) {
                  var throttle = asFloat(fields[0]);
                  chart.data.datasets[0].data.push({x: throttle, y: asFloat(fields[1])});
                  chart.data.datasets[1].data.push({x: throttle, y: asFloat(fields[2])});
                  chart.data.datasets[2].data.push({x: throttle, y: asFloat(fields[3])});
                  chart.data.datasets[3].data.push({x: throttle, y: asFloat(fields[4])});
                  chart.data.datasets[4].data.push({x: throttle, y: asFloat(fields[3])*asFloat(fields[4])});
+                 if(fields.length>5) {
+                     addMotTempDataset();
+                     chart.data.datasets[5].data.push({x: throttle, y: asFloat(fields[5])});
+                 }
              }
          }
     });

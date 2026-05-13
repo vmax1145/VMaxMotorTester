@@ -34,6 +34,14 @@ else {
 
         lastMeasure['consumed'] = value['consumed'];
         document.getElementById('consumed').innerText = value['consumed'];
+
+        if(value['mT']!=null) {
+            lastMeasure['mT'] = value['mT'];
+            document.getElementById('mT').parentElement.parentElement.classList.remove('hidden');
+            document.getElementById('mT').innerText = lastMeasure['mT'];
+            addMotTempDataset();
+        }
+
     });
     connection.on("term", value => {
         var log = JSON.stringify(value);

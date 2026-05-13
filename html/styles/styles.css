@@ -56,7 +56,9 @@ body {
     box-sizing: border-box;
     white-space: nowrap;
 }
-
+.hidden {
+    display: none;
+}
 
 .label {
     flex-basis: 100%;
