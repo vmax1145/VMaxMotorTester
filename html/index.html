@@ -69,6 +69,9 @@
             <div class="settings hidden">
                 <div class="label"><div>Motor Temp/.(C)</div><div id="mT" class="measurement">0</div></div>
             </div>
+            <table class="settingsVar">
+                <tr><td>Max temp limit:</td><td><input id="max_mT" value="120" /></td></tr>
+            </table>
             <div class="settings">
                 <div class="label"><div>Consumed(mAh)</div><div id="consumed" class="measurement">0</div></div>
             </div>
@@ -177,12 +180,19 @@
         var throttle = getAsInt("th_from")
         var max = getAsInt("th_to");
         var max_amps = getAsFloat("max_amps");
+        var max_mT = getAsInt("max_mT");
         var step=getAsFloat("step");
         console.log("Sweep from "+throttle+" to "+max);
         while(measuring) {
             if(lastMeasure['current'] > max_amps) {
                 console.log("Current limit reached");
                 break;
+            }
+            if(lastMeasure['mT']) {
+                if (lastMeasure['mT'] > max_mT) {
+                    console.log("Motor Temperature limit reached");
+                    break;
+                }
             }
             await setThrottleAndWait(throttle,1000);
             updateChart(throttle,lastMeasure);

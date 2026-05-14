@@ -60,7 +60,7 @@ var chart = new Chart(document.getElementById("line-chart"), {
             yCur: {type: 'linear', min: 0, ticks: {color:'#b00000'}, title: {display: true, color:'#b00000'}}, //text:'Current (A)',
             yVolt: {type: 'linear', min: 0, ticks: {color:'#606060'}, title: {display: true, color:'#606060'}}, //,text: 'Voltage (V)'
             yPow: {type: 'linear', min: 0, ticks: {color:'#b0a000'}, title: {display: true, color:'#b0a000'}}, //text: 'Power (W)',
-            ymT: {type: 'linear',position: 'right', min: 0, max: 100, ticks: {color:'#b000ff'}, title: {display: true, color:'#b000ff'}, display:false} //text: 'Motor T',
+            ymT: {type: 'linear',position: 'right', min: 0, ticks: {color:'#b000ff'}, title: {display: true, color:'#b000ff'}, display:false} //text: 'Motor T',
         },
         parsing: false,
         animation: false,
