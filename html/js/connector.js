@@ -38,6 +38,7 @@ else {
         if(value['mT']!=null) {
             lastMeasure['mT'] = value['mT']/10.0;
             document.getElementById('mT').parentElement.parentElement.classList.remove('hidden');
+            document.getElementById('max_mT').parentElement.parentElement.parentElement.parentElement.classList.remove('hidden');
             document.getElementById('mT').innerText = lastMeasure['mT'].toFixed(1);
             addMotTempDataset();
         }
