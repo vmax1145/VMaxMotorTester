@@ -220,10 +220,10 @@ void loop() {
 
     if(mlxFound){        
         if(step==1) {
-            motTemp = mlx.readObjectTempC();                   
+            motTemp = mlx.readObjectTempC()*10.0;
         }
         else if(step==2) {
-            ambTemp = mlx.readAmbientTempC();                           
+            ambTemp = mlx.readAmbientTempC()*10.0;
         }
     }
     step++;

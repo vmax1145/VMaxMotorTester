@@ -37,7 +37,5 @@ Collected data transmitted via USB serial to HTML page for visualization and con
 - [M3 profile nuts for 2020 profile](/img/M3_2020_nuts.png) (6pcs)
 - AWG16 and AWG28 silicone wires
 - M3, M2.5 bolts and nuts 
+- [GY-906-DCI](/img/GY-906-2.png) IR temperature sensor (Optional)
 
-## Known issues
-- Due to poor design of current sensor in Tekko32 F4 AM32 
-it has deadzone at low currens below 1-1.5A, this also lower down measured value aproximatly the same value.
